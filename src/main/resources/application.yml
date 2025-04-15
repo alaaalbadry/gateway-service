@@ -1,29 +1,92 @@
+#server:
+#  port: 8080  # Gateway will listen on this port
+#
+#spring:
+#  application:
+#    name: api-gateway
+#
+#  cloud:
+#    gateway:
+#      discovery:
+#        locator:
+#          enabled: true         # Enable service discovery-based routing
+#          lower-case-service-id: true
+#      routes:                   # Optional - can be omitted if using dynamic routes
+#        - id: user-service
+#          uri: lb://user-service
+#          predicates:
+#            - Path=/users/**
+#
+#        - id: demo-order
+#          uri: lb://demo-order
+#          predicates:
+#            - Path=/orders/**
+#
+#        - id: demo-payment
+#          uri: lb://demo-payment
+#          predicates:
+#            - Path=/payments/**
+#
+#  eureka:
+#    client:
+#      service-url:
+#        defaultZone: http://localhost:8761/
+#
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: gateway, health, info
+#spring:
+#  application:
+#    name: gateway-service
+#
+#  cloud:
+#    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#          lower-case-service-id: true
+#
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+#    fetch-registry: true
+#    register-with-eureka: true
+#  instance:
+#    hostname: localhost
+#    prefer-ip-address: true
+
 server:
-  port: 8080  # API Gateway port
+  port: 8080
 
 spring:
   application:
-    name: api-gateway
+    name: gateway-service
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     gateway:
-      routes:
-        - id: user-service
-          uri: lb://USER-SERVICE  # Load-balanced service name or direct URL (e.g., http://localhost:8081)
-          predicates:
-            - Path=/users/**
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 
-        - id: order-service
-          uri: lb://DEMO-ORDER
-          predicates:
-            - Path=/orders/**
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
 
-        - id: payment-service
-          uri: lb://DEMO-PAYMENT
-          predicates:
-            - Path=/payments/**
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
 
 management:
   endpoints:
     web:
       exposure:
-        include: gateway, health, info
+        include: "*"
